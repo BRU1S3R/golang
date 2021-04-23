@@ -10,6 +10,8 @@ once you can compile golang god which is really easy. Then compile that code abo
 once you do that you will have a dmp file, Simply load that in mimikatz and you will be able to read the NTLM and password DAPI etc
 
 
+FIND YOUR OWN C2 Center
+https://docs.google.com/spreadsheets/d/1b4mUxa6cDQuTV2BPC6aA-GR4zGZi0ooPYtBe4IgPsSc/edit#gid=0
 
 
 YOU NEED TO CHECK OUT MERLIN
