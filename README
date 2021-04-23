@@ -1,1 +1,10 @@
 https://www.freecodecamp.org/news/setting-up-go-programming-language-on-windows-f02c8c14e2f/
+that is some golang code for win32 api
+[11:03 PM]
+that will bypass av and dump memory
+[11:03 PM]
+just FYI, i did not write that code
+[11:04 PM]
+once you can compile golang god which is really easy. Then compile that code above find the LSASS PID and run it like this C:\ yourbinary.exe processID_OF_LSASS C:\temp\mydump.dmp
+[11:05 PM]
+once you do that you will have a dmp file, Simply load that in mimikatz and you will be able to read the NTLM and password DAPI etc
