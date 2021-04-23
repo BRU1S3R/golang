@@ -1,0 +1,45 @@
+package main
+
+import (
+    "fmt"
+    "os"
+    "strconv"
+    "syscall"
+    "unsafe"
+)
+
+//run youbinary.exe processid c:\tu\mydump.dmp
+
+var kernel32        = syscall.NewLazyDLL("kernel32.dll")
+var procOpenProcess = kernel32.NewProc("OpenProcess")
+var procCreateFileW = kernel32.NewProc("CreateFileW")
+
+var dbghelp               = syscall.NewLazyDLL("Dbghelp.dll")
+var procMiniDumpWriteDump = dbghelp.NewProc("MiniDumpWriteDump")
+
+func main() {
+    fmt.Println("[ ] Starting Enum-DumpProcessMemory\n")
+
+    pid, _ := strconv.Atoi(os.Args[1])
+    fmt.Println("[-] PID            :", pid)
+
+    processHandle, _, _ := procOpenProcess.Call(uintptr(0xFFFF), uintptr(1), uintptr(pid))
+    fmt.Println("[-] Process Handle :", processHandle)
+
+    if _, err := os.Stat(os.Args[2]); os.IsNotExist(err) {
+        os.Create(os.Args[2])
+    }
+    path, _ := syscall.UTF16PtrFromString(os.Args[2])
+
+    fileHandle, _, _ := procCreateFileW.Call(uintptr(unsafe.Pointer(path)), syscall.GENERIC_WRITE, syscall.FILE_SHARE_READ|syscall.FILE_SHARE_WRITE, 0, syscall.OPEN_EXISTING, syscall.FILE_ATTRIBUTE_NORMAL, 0)
+    fmt.Println("[-] File Handle    :", fileHandle)
+
+    ret, _, err := procMiniDumpWriteDump.Call(uintptr(processHandle), uintptr(pid), uintptr(fileHandle), 0x00061907, 0, 0, 0)
+
+    if ret != 0 {
+        fmt.Println("[+] Process memory dump successful")
+    } else {
+        fmt.Println("[x] Process memory dump not successful")
+        fmt.Println(err)
+    }
+}
